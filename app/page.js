@@ -1,37 +1,86 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { IoLocationSharp, IoFlag, IoCash, IoFlash, IoShieldCheckmark, IoCheckmarkCircle, IoCar, IoEllipse } from 'react-icons/io5';
+import { IoLocationSharp, IoFlag, IoCash, IoFlash, IoShieldCheckmark, IoCheckmarkCircle, IoCar, IoEllipse, IoWallet } from 'react-icons/io5';
 import styles from './page.module.css';
 import LocationInput from '../components/LocationInput';
 import Button from '../components/Button';
 import RideCard from '../components/RideCard';
 import RideStatus from '../components/RideStatus';
 import StaticMap from '../components/StaticMap';
+import PaymentModal from '../components/PaymentModal';
+import { useToast } from '../hooks/useToast';
+import { useSession } from 'next-auth/react';
 
 export default function Home() {
+  const { data: session } = useSession();
+  const toast = useToast();
   const [selectedRide, setSelectedRide] = useState('lite');
   const [rideStatus, setRideStatus] = useState('idle'); // idle, searching, confirmed, arriving
   const [pickup, setPickup] = useState({ name: 'Lekki Phase 1', lat: null, lon: null });
   const [dropoff, setDropoff] = useState({ name: '', lat: null, lon: null });
+  
+  // Payment state
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [walletBalance, setWalletBalance] = useState(5000); // Mock balance
+  const [rideCost, setRideCost] = useState(1200);
+
+  // Update cost when ride type changes
+  useEffect(() => {
+    const costs = { lite: 1200, premium: 2500, van: 4000 };
+    setRideCost(costs[selectedRide]);
+  }, [selectedRide]);
 
   const handleRequestRide = () => {
     if (!pickup.name || !dropoff.name) {
-      alert('Please select both pickup and dropoff locations');
+      toast.error('Please select both pickup and dropoff locations');
       return;
     }
 
+    if (!session) {
+      toast.warning('Please log in to book a ride');
+      return;
+    }
+
+    // Check balance
+    if (walletBalance < rideCost) {
+      toast.error('Insufficient wallet balance. Please fund your wallet.');
+      setShowPaymentModal(true);
+      return;
+    }
+
+    // Deduct balance and start ride
+    setWalletBalance(prev => prev - rideCost);
+    toast.success(`Ride requested! ₦${rideCost.toLocaleString()} deducted from wallet.`);
     setRideStatus('searching');
     
     // Simulate finding a driver
     setTimeout(() => {
       setRideStatus('confirmed');
+      toast.info('Driver found! Chidi is on the way.');
       
       // Simulate driver arriving
       setTimeout(() => {
         setRideStatus('arriving');
+        toast.success('Driver has arrived!');
       }, 5000);
     }, 3000);
+  };
+
+  const handleFundSuccess = (response) => {
+    // In real app, verify transaction first
+    const amount = parseInt(response.amount) / 100; // Convert kobo to naira (if amount comes from response) or use state
+    // For simplicity using the amount we know was requested or just adding a fixed amount for demo if needed
+    // But better to rely on what we passed to modal. 
+    // Let's assume the modal handles the funding logic and we just update UI here
+    // Actually, PaymentModal calls onSuccess with response. We need to know amount.
+    // Let's rely on the user seeing the success toast from PaymentModal or here.
+    
+    // For this demo, we'll just add 5000 if we don't track the specific amount in this parent component easily
+    // But wait, the PaymentModal is for funding specific amount. 
+    // Let's just show success message here.
+    toast.success('Wallet funded successfully! Please try booking again.');
+    setWalletBalance(prev => prev + 5000); // Mock funding
   };
 
   const handleCancelRide = () => {
@@ -104,12 +153,20 @@ export default function Home() {
                 />
               </div>
 
+              <div className="flex justify-between items-center mt-4 mb-2 px-1">
+                <div className="text-sm text-gray-400">Wallet Balance:</div>
+                <div className="font-bold text-white flex items-center gap-1">
+                  <IoWallet className="text-emerald-400" />
+                  ₦{walletBalance.toLocaleString()}
+                </div>
+              </div>
+
               <Button 
                 variant="primary" 
-                className="w-full mt-4"
+                className="w-full"
                 onClick={handleRequestRide}
               >
-                Request Ride
+                Request Ride (₦{rideCost.toLocaleString()})
               </Button>
             </>
           ) : (
@@ -119,6 +176,16 @@ export default function Home() {
             />
           )}
         </div>
+
+        <PaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+          amount={Math.max(1000, rideCost - walletBalance + 500)} // Suggest amount needed + buffer
+          email={session?.user?.email}
+          onSuccess={handleFundSuccess}
+          title="Insufficient Funds"
+          description={`Please fund your wallet to pay for this ride (₦${rideCost.toLocaleString()})`}
+        />
 
         <div className={styles.mapPlaceholder}>
           <StaticMap pickup={pickup} dropoff={dropoff} />

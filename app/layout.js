@@ -2,6 +2,7 @@ import { Outfit } from "next/font/google";
 import "./globals.css";
 import Header from "../components/Header";
 import AuthProvider from "../components/SessionProvider";
+import { ToastProvider } from "../hooks/useToast";
 
 const outfit = Outfit({ 
   subsets: ["latin"],
@@ -18,10 +19,12 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <body className={outfit.className}>
         <AuthProvider>
-          <Header />
-          <main>
-            {children}
-          </main>
+          <ToastProvider>
+            <Header />
+            <main>
+              {children}
+            </main>
+          </ToastProvider>
         </AuthProvider>
       </body>
     </html>
