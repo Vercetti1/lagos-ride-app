@@ -11,16 +11,11 @@ const LocationInput = ({
   onChange,
   onSelectLocation 
 }) => {
-  const [query, setQuery] = useState(value || '');
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const debounceTimer = useRef(null);
   const wrapperRef = useRef(null);
-
-  useEffect(() => {
-    setQuery(value || '');
-  }, [value]);
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -100,8 +95,11 @@ const LocationInput = ({
 
   const handleInputChange = (e) => {
     const newQuery = e.target.value;
-    setQuery(newQuery);
     setShowSuggestions(true);
+
+    if (onChange) {
+      onChange(e);
+    }
 
     // Debounce API calls
     if (debounceTimer.current) {
@@ -115,7 +113,6 @@ const LocationInput = ({
 
   const handleSelectSuggestion = (suggestion) => {
     const locationName = suggestion.address?.name || suggestion.display_name.split(',')[0];
-    setQuery(locationName);
     setShowSuggestions(false);
     setSuggestions([]);
 
@@ -142,7 +139,7 @@ const LocationInput = ({
           className="input-field"
           type="text"
           placeholder={placeholder}
-          value={query}
+          value={value || ''}
           onChange={handleInputChange}
           onFocus={() => setShowSuggestions(true)}
         />
