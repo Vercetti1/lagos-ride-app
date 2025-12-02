@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { signOut } from 'next-auth/react';
+import { HiArrowRightOnRectangle } from 'react-icons/hi2';
 import './UserDropdown.css';
 
 const UserDropdown = ({ user }) => {
@@ -59,7 +60,7 @@ const UserDropdown = ({ user }) => {
             className="dropdown-item logout-btn"
             onClick={() => signOut({ callbackUrl: '/' })}
           >
-            <span>🚪</span>
+            <HiArrowRightOnRectangle size={18} />
             Log out
           </button>
         </div>

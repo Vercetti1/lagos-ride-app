@@ -130,6 +130,11 @@
         padding: 0 16px;
     }
 
+    .header-actions {
+        gap: 8px;
+        /* Reduce gap between buttons on mobile */
+    }
+
     .user-name {
         display: none;
     }

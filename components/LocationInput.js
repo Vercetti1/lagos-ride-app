@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import { HiMapPin } from 'react-icons/hi2';
 import './LocationInput.css';
 
 const LocationInput = ({ 
@@ -16,8 +17,6 @@ const LocationInput = ({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const debounceTimer = useRef(null);
   const wrapperRef = useRef(null);
-
-  console.log('LocationInput render. Placeholder:', placeholder, 'Value:', value);
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -160,7 +159,7 @@ const LocationInput = ({
               className="suggestion-item"
               onClick={() => handleSelectSuggestion(suggestion)}
             >
-              <span className="suggestion-icon">📍</span>
+              <HiMapPin className="suggestion-icon" size={20} />
               <div className="suggestion-content">
                 <div className="suggestion-name">
                   {suggestion.address?.name || suggestion.display_name.split(',')[0]}
