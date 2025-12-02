@@ -17,6 +17,8 @@ const LocationInput = ({
   const debounceTimer = useRef(null);
   const wrapperRef = useRef(null);
 
+  console.log('LocationInput render. Placeholder:', placeholder, 'Value:', value);
+
   // Close suggestions when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
