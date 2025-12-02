@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { IoLocationSharp, IoFlag, IoCash, IoFlash, IoShieldCheckmark, IoCheckmarkCircle, IoCar, IoEllipse } from 'react-icons/io5';
 import styles from './page.module.css';
 import LocationInput from '../components/LocationInput';
 import Button from '../components/Button';
@@ -57,7 +58,7 @@ export default function Home() {
               <div className="flex flex-col gap-4">
                 <LocationInput 
                   placeholder="Pickup Location" 
-                  icon="📍"
+                  icon={<IoLocationSharp />}
                   value={pickup.name}
                   onChange={(e) => setPickup({ ...pickup, name: e.target.value })}
                   onSelectLocation={(location) => setPickup({ 
@@ -68,7 +69,7 @@ export default function Home() {
                 />
                 <LocationInput 
                   placeholder="Dropoff Location" 
-                  icon="🏁"
+                  icon={<IoFlag />}
                   value={dropoff.name}
                   onChange={(e) => setDropoff({ ...dropoff, name: e.target.value })}
                   onSelectLocation={(location) => setDropoff({ 
@@ -126,12 +127,12 @@ export default function Home() {
           {/* Location Markers */}
           {pickup.lat && (
             <div className={styles.pickupMarker} title={pickup.name}>
-              📍
+              <IoLocationSharp size={24} />
             </div>
           )}
           {dropoff.lat && (
             <div className={styles.dropoffMarker} title={dropoff.name}>
-              🏁
+              <IoFlag size={24} />
             </div>
           )}
           
@@ -152,16 +153,16 @@ export default function Home() {
           {/* Map Legend */}
           <div className={styles.mapLegend}>
             <div className={styles.legendItem}>
-              <span>📍</span> Your Location
+              <IoLocationSharp size={16} /> Your Location
             </div>
             {pickup.name && pickup.name !== 'Lekki Phase 1' && (
               <div className={styles.legendItem}>
-                <span>🟢</span> Pickup: {pickup.name}
+                <IoEllipse size={16} color="#10b981" /> Pickup: {pickup.name}
               </div>
             )}
             {dropoff.name && (
               <div className={styles.legendItem}>
-                <span>🔴</span> Dropoff: {dropoff.name}
+                <IoEllipse size={16} color="#ef4444" /> Dropoff: {dropoff.name}
               </div>
             )}
           </div>
@@ -169,7 +170,7 @@ export default function Home() {
           {/* Simulated Driver Marker */}
           {rideStatus !== 'idle' && (
             <div className={styles.driverMarker}>
-              🚗
+              <IoCar size={24} />
             </div>
           )}
         </div>
@@ -187,17 +188,17 @@ export default function Home() {
           
           <div className={styles.featuresGrid}>
             <div className={`glass-panel ${styles.featureCard}`}>
-              <div className={styles.featureIcon}>💰</div>
+              <div className={styles.featureIcon}><IoCash size={40} /></div>
               <h3>High Earnings</h3>
               <p>Keep more of what you earn with our low commission rates.</p>
             </div>
             <div className={`glass-panel ${styles.featureCard}`}>
-              <div className={styles.featureIcon}>⚡</div>
+              <div className={styles.featureIcon}><IoFlash size={40} /></div>
               <h3>Electric Fleet</h3>
               <p>Drive our state-of-the-art electric vehicles. No fuel costs.</p>
             </div>
             <div className={`glass-panel ${styles.featureCard}`}>
-              <div className={styles.featureIcon}>🛡️</div>
+              <div className={styles.featureIcon}><IoShieldCheckmark size={40} /></div>
               <h3>Safety First</h3>
               <p>24/7 support and advanced safety features for peace of mind.</p>
             </div>
@@ -222,10 +223,10 @@ export default function Home() {
           <div className={styles.businessGrid}>
             <div className={styles.businessInfo}>
               <ul className={styles.benefitList}>
-                <li>✓ Centralized billing and reporting</li>
-                <li>✓ Priority vehicle dispatch</li>
-                <li>✓ Dedicated account management</li>
-                <li>✓ Employee travel perks</li>
+                <li><IoCheckmarkCircle size={20} style={{marginRight: '8px', color: '#10b981'}} /> Centralized billing and reporting</li>
+                <li><IoCheckmarkCircle size={20} style={{marginRight: '8px', color: '#10b981'}} /> Priority vehicle dispatch</li>
+                <li><IoCheckmarkCircle size={20} style={{marginRight: '8px', color: '#10b981'}} /> Dedicated account management</li>
+                <li><IoCheckmarkCircle size={20} style={{marginRight: '8px', color: '#10b981'}} /> Employee travel perks</li>
               </ul>
               <Button variant="secondary" className="mt-8">
                 Get Started
