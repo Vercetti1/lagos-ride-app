@@ -21,7 +21,7 @@ const StaticMap = ({ pickup, dropoff }) => {
     }
 
     // Create static map URL
-    const mapUrl = `https://maps.locationiq.com/v3/staticmap?key=${apiKey}&center=${lat},${lon}&zoom=${zoom}&size=600x500&format=png&maptype=streets`;
+    const mapUrl = `https://maps.locationiq.com/v3/staticmap?key=${apiKey}&center=${lat},${lon}&zoom=${zoom}&size=600x500&format=png&maptype=hybrid`;
     
     mapRef.current.style.backgroundImage = `url('${mapUrl}')`;
     mapRef.current.style.backgroundSize = 'cover';

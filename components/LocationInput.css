@@ -168,3 +168,32 @@
 .suggestions-list::-webkit-scrollbar-thumb:hover {
     background: var(--neon-purple);
 }
+
+@media (max-width: 768px) {
+    .input-field {
+        padding: 14px;
+        padding-left: 42px;
+        padding-right: 42px;
+        font-size: 16px;
+        /* Prevents iOS zoom on focus */
+    }
+
+    .input-icon {
+        left: 12px;
+        font-size: 1.1rem;
+    }
+
+    .loading-spinner {
+        right: 12px;
+    }
+
+    .suggestions-list {
+        max-height: 250px;
+        /* More space for keyboard on mobile */
+    }
+
+    .suggestion-item {
+        padding: 14px;
+        /* Larger touch target */
+    }
+}
