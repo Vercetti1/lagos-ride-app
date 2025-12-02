@@ -1,0 +1,150 @@
+.header {
+    position: fixed;
+    top: 20px;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    margin: 0 20px;
+    border-radius: var(--radius-full);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(12px);
+    background: var(--surface-glass);
+    border: 1px solid var(--border-glass);
+}
+
+.header.scrolled {
+    top: 10px;
+    margin: 0 auto;
+    width: fit-content;
+    min-width: 200px;
+    background: rgba(10, 10, 15, 0.8);
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Hovering over the scrolled header reveals everything */
+.header.scrolled:hover {
+    width: calc(100% - 40px);
+    /* Restore full width minus margins */
+    background: var(--surface-glass);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+    padding: 0 24px;
+    transition: all 0.4s ease;
+}
+
+.header.scrolled .header-content {
+    height: 50px;
+    padding: 0 20px;
+    justify-content: center;
+}
+
+.header.scrolled:hover .header-content {
+    height: 70px;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.nav-links,
+.header-actions {
+    display: flex;
+    gap: 32px;
+    transition: all 0.3s ease;
+    opacity: 1;
+    visibility: visible;
+    width: auto;
+}
+
+.header-actions {
+    gap: 12px;
+    align-items: center;
+}
+
+/* Hide elements when scrolled */
+.header.scrolled .nav-links,
+.header.scrolled .header-actions {
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+}
+
+/* Show elements on hover */
+.header.scrolled:hover .nav-links,
+.header.scrolled:hover .header-actions {
+    opacity: 1;
+    visibility: visible;
+    width: auto;
+    pointer-events: auto;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #fff;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--neon-cyan);
+}
+
+.user-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+
+    .header-content {
+        padding: 0 16px;
+    }
+
+    .user-name {
+        display: none;
+    }
+
+    .header.scrolled {
+        width: fit-content;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+    }
+
+    .header.scrolled:hover {
+        width: calc(100% - 32px);
+        left: 0;
+        transform: none;
+        margin: 0 16px;
+    }
+}

@@ -1,66 +1,250 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import React, { useState, useEffect } from 'react';
+import styles from './page.module.css';
+import LocationInput from '../components/LocationInput';
+import Button from '../components/Button';
+import RideCard from '../components/RideCard';
+import RideStatus from '../components/RideStatus';
+import StaticMap from '../components/StaticMap';
 
 export default function Home() {
+  const [selectedRide, setSelectedRide] = useState('lite');
+  const [rideStatus, setRideStatus] = useState('idle'); // idle, searching, confirmed, arriving
+  const [pickup, setPickup] = useState({ name: 'Lekki Phase 1', lat: null, lon: null });
+  const [dropoff, setDropoff] = useState({ name: '', lat: null, lon: null });
+
+  const handleRequestRide = () => {
+    if (!pickup.name || !dropoff.name) {
+      alert('Please select both pickup and dropoff locations');
+      return;
+    }
+
+    setRideStatus('searching');
+    
+    // Simulate finding a driver
+    setTimeout(() => {
+      setRideStatus('confirmed');
+      
+      // Simulate driver arriving
+      setTimeout(() => {
+        setRideStatus('arriving');
+      }, 5000);
+    }, 3000);
+  };
+
+  const handleCancelRide = () => {
+    setRideStatus('idle');
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className={styles.main}>
+      <section className={styles.hero}>
+        <h1 className={styles.heroTitle}>
+          Ride the <span className="text-gradient">Future</span> of Lagos
+        </h1>
+        <p className={styles.heroSubtitle}>
+          Experience seamless, secure, and lightning-fast transportation across the city.
+        </p>
+      </section>
+
+      <section id="ride" className={styles.bookingSection}>
+        <div className={`glass-panel ${styles.bookingForm}`}>
+          {rideStatus === 'idle' ? (
+            <>
+              <h2 className="text-xl font-bold mb-2">Where to?</h2>
+              
+              <div className="flex flex-col gap-4">
+                <LocationInput 
+                  placeholder="Pickup Location" 
+                  icon="📍"
+                  value={pickup.name}
+                  onChange={(e) => setPickup({ ...pickup, name: e.target.value })}
+                  onSelectLocation={(location) => setPickup({ 
+                    name: location.name, 
+                    lat: location.lat, 
+                    lon: location.lon 
+                  })}
+                />
+                <LocationInput 
+                  placeholder="Dropoff Location" 
+                  icon="🏁"
+                  value={dropoff.name}
+                  onChange={(e) => setDropoff({ ...dropoff, name: e.target.value })}
+                  onSelectLocation={(location) => setDropoff({ 
+                    name: location.name, 
+                    lat: location.lat, 
+                    lon: location.lon 
+                  })}
+                />
+              </div>
+
+              <div className={styles.rideOptions}>
+                <RideCard 
+                  title="Lagos Lite" 
+                  time="5 mins away" 
+                  price="₦1,200"
+                  selected={selectedRide === 'lite'}
+                  onClick={() => setSelectedRide('lite')}
+                />
+                <RideCard 
+                  title="Lagos Premium" 
+                  time="8 mins away" 
+                  price="₦2,500"
+                  selected={selectedRide === 'premium'}
+                  onClick={() => setSelectedRide('premium')}
+                />
+                <RideCard 
+                  title="Lagos Van" 
+                  time="12 mins away" 
+                  price="₦4,000"
+                  selected={selectedRide === 'van'}
+                  onClick={() => setSelectedRide('van')}
+                />
+              </div>
+
+              <Button 
+                variant="primary" 
+                className="w-full mt-4"
+                onClick={handleRequestRide}
+              >
+                Request Ride
+              </Button>
+            </>
+          ) : (
+            <RideStatus 
+              status={rideStatus} 
+              onCancel={handleCancelRide}
             />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          )}
         </div>
-      </main>
+
+        <div className={styles.mapPlaceholder}>
+          <StaticMap pickup={pickup} dropoff={dropoff} />
+          <div className={styles.mapGrid}></div>
+          
+          {/* Location Markers */}
+          {pickup.lat && (
+            <div className={styles.pickupMarker} title={pickup.name}>
+              📍
+            </div>
+          )}
+          {dropoff.lat && (
+            <div className={styles.dropoffMarker} title={dropoff.name}>
+              🏁
+            </div>
+          )}
+          
+          {/* Route Line */}
+          {pickup.lat && dropoff.lat && (
+            <div className={styles.routeLine}></div>
+          )}
+          
+          {/* User Location Pulse */}
+          <div className={styles.mapPulse}></div>
+          
+          {/* Map Controls */}
+          <div style={{ position: 'absolute', bottom: 20, right: 20, display: 'flex', gap: 10 }}>
+            <Button variant="secondary" style={{ padding: '8px', minWidth: '40px' }}>+</Button>
+            <Button variant="secondary" style={{ padding: '8px', minWidth: '40px' }}>-</Button>
+          </div>
+          
+          {/* Map Legend */}
+          <div className={styles.mapLegend}>
+            <div className={styles.legendItem}>
+              <span>📍</span> Your Location
+            </div>
+            {pickup.name && pickup.name !== 'Lekki Phase 1' && (
+              <div className={styles.legendItem}>
+                <span>🟢</span> Pickup: {pickup.name}
+              </div>
+            )}
+            {dropoff.name && (
+              <div className={styles.legendItem}>
+                <span>🔴</span> Dropoff: {dropoff.name}
+              </div>
+            )}
+          </div>
+          
+          {/* Simulated Driver Marker */}
+          {rideStatus !== 'idle' && (
+            <div className={styles.driverMarker}>
+              🚗
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Drive Section */}
+      <section id="drive" className={styles.driveSection}>
+        <div className={styles.sectionContent}>
+          <h2 className={styles.sectionTitle}>
+            Drive with <span className="text-gradient">LagosRide</span>
+          </h2>
+          <p className={styles.sectionSubtitle}>
+            Earn on your own terms with our futuristic fleet. Join the revolution of transportation in Lagos.
+          </p>
+          
+          <div className={styles.featuresGrid}>
+            <div className={`glass-panel ${styles.featureCard}`}>
+              <div className={styles.featureIcon}>💰</div>
+              <h3>High Earnings</h3>
+              <p>Keep more of what you earn with our low commission rates.</p>
+            </div>
+            <div className={`glass-panel ${styles.featureCard}`}>
+              <div className={styles.featureIcon}>⚡</div>
+              <h3>Electric Fleet</h3>
+              <p>Drive our state-of-the-art electric vehicles. No fuel costs.</p>
+            </div>
+            <div className={`glass-panel ${styles.featureCard}`}>
+              <div className={styles.featureIcon}>🛡️</div>
+              <h3>Safety First</h3>
+              <p>24/7 support and advanced safety features for peace of mind.</p>
+            </div>
+          </div>
+
+          <Button variant="primary" className="mt-8">
+            Become a Driver
+          </Button>
+        </div>
+      </section>
+
+      {/* Business Section */}
+      <section id="business" className={styles.businessSection}>
+        <div className={styles.sectionContent}>
+          <h2 className={styles.sectionTitle}>
+            LagosRide for <span className="text-gradient">Business</span>
+          </h2>
+          <p className={styles.sectionSubtitle}>
+            Reliable transportation solutions for your team and clients.
+          </p>
+
+          <div className={styles.businessGrid}>
+            <div className={styles.businessInfo}>
+              <ul className={styles.benefitList}>
+                <li>✓ Centralized billing and reporting</li>
+                <li>✓ Priority vehicle dispatch</li>
+                <li>✓ Dedicated account management</li>
+                <li>✓ Employee travel perks</li>
+              </ul>
+              <Button variant="secondary" className="mt-8">
+                Get Started
+              </Button>
+            </div>
+            <div className={`glass-panel ${styles.businessCard}`}>
+              <h3>Corporate Dashboard</h3>
+              <div className={styles.mockChart}>
+                <div className={styles.chartBar} style={{height: '40%'}}></div>
+                <div className={styles.chartBar} style={{height: '70%'}}></div>
+                <div className={styles.chartBar} style={{height: '50%'}}></div>
+                <div className={styles.chartBar} style={{height: '90%'}}></div>
+                <div className={styles.chartBar} style={{height: '60%'}}></div>
+              </div>
+              <p className="text-sm text-gray-400 mt-4">Real-time expense tracking</p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lagos Ride App
+
+A futuristic ride-hailing application for Lagos, built with Next.js.
+
+## Features
+- **Futuristic UI:** Neon aesthetics, glassmorphism, and smooth animations.
+- **LocationIQ Autocomplete:** Real-time location search for Lagos, Nigeria.
+- **Ride Request Flow:** Simulate requesting a ride with real-time status updates.
+- **Google Authentication:** Secure login with Google OAuth.
+- **Responsive Design:** Works seamlessly on desktop and mobile.
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Set Up Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```env
+# LocationIQ API Configuration
+# Get your free API key from: https://locationiq.com/
+NEXT_PUBLIC_LOCATIONIQ_API_KEY=your_api_key_here
+
+# Google OAuth (for authentication)
+GOOGLE_CLIENT_ID=your_client_id
+GOOGLE_CLIENT_SECRET=your_client_secret
+NEXTAUTH_SECRET=your_random_secret_string
+NEXTAUTH_URL=http://localhost:3000
+```
+
+### 3. Get Your LocationIQ API Key
+
+1. Go to [https://locationiq.com/](https://locationiq.com/)
+2. Sign up for a free account
+3. Navigate to your dashboard
+4. Copy your API key
+5. Paste it in `.env.local` as `NEXT_PUBLIC_LOCATIONIQ_API_KEY`
+
+**Free Tier Includes:**
+- 5,000 requests per day
+- Autocomplete & Geocoding
+- No credit card required
+
+### 4. Run the Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Project Structure
+- `app/`: Main application code (pages, layouts, styles).
+- `components/`: Reusable UI components (LocationInput, RideCard, RideStatus, etc.).
+- `data/`: Static data files (Lagos locations fallback).
+- `public/`: Static assets.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## API Integration
 
-## Learn More
+### LocationIQ Autocomplete
+The app uses LocationIQ's autocomplete API to provide real-time location suggestions as users type. The component:
+- Debounces requests (300ms delay)
+- Filters results to Lagos, Nigeria
+- Falls back gracefully if API key is missing
+- Displays loading states and suggestions
 
-To learn more about Next.js, take a look at the following resources:
+## Build for Production
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run build
+npm start
+```

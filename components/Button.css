@@ -1,0 +1,74 @@
+.btn {
+    padding: 12px 24px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Primary Button (Gradient Neon) */
+.btn.primary {
+    background: var(--gradient-main);
+    color: white;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+    z-index: 1;
+}
+
+.btn.primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--neon-purple), var(--neon-cyan));
+    z-index: -1;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.btn.primary:hover {
+    box-shadow: 0 0 30px rgba(188, 19, 254, 0.6);
+    transform: translateY(-2px);
+}
+
+.btn.primary:hover::before {
+    opacity: 1;
+}
+
+/* Secondary Button (Glass) */
+.btn.secondary {
+    background: var(--surface-glass);
+    border: 1px solid var(--border-glass);
+    color: white;
+    backdrop-filter: blur(12px);
+}
+
+.btn.secondary:hover {
+    background: var(--surface-glass-hover);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+}
+
+/* Ghost Button (Text Only) */
+.btn.ghost {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid transparent;
+}
+
+.btn.ghost:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
